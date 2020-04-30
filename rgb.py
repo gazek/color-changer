@@ -1,27 +1,30 @@
 from collections import defaultdict
 
 class RGB():
+    # max RGB component value
+    _MAX = 255
+    # min RGB component value
+    _MIN = 0
+
     def __init__(self, color=None, order=(0,1,2)):
         # max RGB component value
         self._MAX = 255
         # min RGB component value
         self._MIN = 0
         # make sure the color is valid
-        if not self.is_color_valid(color):
-            print(color)
+        if not self._is_color_valid(color):
             raise ValueError(f'invalid RGB color provided: {color}')
         # make sure the order is valid
-        if not self.is_order_valid(order):
-            print(order)
+        if not self._is_order_valid(order):
             raise ValueError(f'invalid RGB order provided: {order}')
         # store the color
-        self.color = color
+        self._color = color
         self._order = order
         # determine base color
         # determine brightness
         # determine white level
 
-    def is_color_valid(self, color):
+    def _is_color_valid(self, color):
         """Verifies the a tuple is a valid RGB color
 
         Positional Arguments:
@@ -29,12 +32,19 @@ class RGB():
 
         Returns: bool
         """
+        # make sure it is a tuple
+        if type(color).__name__ != 'tuple':
+            return False
+        # check the length of the tuple
+        if len(color) != 3:
+            return False
+        # verify that component colors are between _MIN and _MAX
         for c in color:
             if c < self._MIN or c > self._MAX:
                 return False
         return True
 
-    def is_order_valid(self, order):
+    def _is_order_valid(self, order):
         """
         """
         # make sure it is a tuple
@@ -50,7 +60,7 @@ class RGB():
                 return False
         return True
 
-    def get_color_dominance_indices(self, color):
+    def _get_color_dominance_indices(self, color):
         """Orders the color component indices in descending order by underlying component color value
 
         Positional Arguments:
@@ -78,7 +88,7 @@ class RGB():
         # convert to a tuple before returning
         return tuple(result)
 
-    def get_base_color(self, color):
+    def _get_base_color(self, color):
         """Removes white and black from an rgb color
 
         Positional Arguments:
@@ -92,12 +102,12 @@ class RGB():
         }
         """
         # check base case
-        if self.is_base_color(color):
+        if self._is_base_color(color):
             return color
         # find base color
         raise NotImplementedError
 
-    def is_base_color(self, color):
+    def _is_base_color(self, color):
         """Checks that at least one of the color component values is 0 and at least one color component is 255
 
         Positional Arguments:
@@ -131,7 +141,7 @@ class RGB():
 
 
 
-def get_color_white_level(color):
+def _get_color_white_level(color):
     """Returns a value between 0 - 1 indicating the amount of white in a color
 
     Positional Arguments:
@@ -142,7 +152,7 @@ def get_color_white_level(color):
     """
     raise NotImplementedError
 
-def get_color_brightness(color):
+def _get_color_brightness(color):
     """Returns a value between 0 - 1 indicating the brightness of a color
 
     Positional Arguments:
@@ -153,14 +163,14 @@ def get_color_brightness(color):
     """
     raise NotImplementedError
 
-def modify_base_color_white_level_and_brightness(base_color, white_level, brightness):
+def _modify_base_color_white_level_and_brightness(base_color, white_level, brightness):
     """
     """
     raise NotImplementedError
 
-def get_brightness_modifier(base_color, brightness):
+def _get_brightness_modifier(base_color, brightness):
     raise NotImplementedError
 
-def get_white_level_modifier(base_color, white_level):
+def _get_white_level_modifier(base_color, white_level):
     raise NotImplementedError
 
