@@ -1,7 +1,7 @@
 import unittest
-import colorchanger
+import rgb
 
-class TestColorChanger(unittest.TestCase):
+class TestRGB(unittest.TestCase):
 
     def test_is_base_color(self):
         tests = [
@@ -23,22 +23,25 @@ class TestColorChanger(unittest.TestCase):
             [(0, 255, 100), True],
             [(0, 100, 255), True]
         ]
+        # instantiate RGB class
+        color = rgb.RGB((1,0,0))
         for t in range(len(tests)):
-            result = colorchanger.is_base_color(tests[t][0])
+            result = color.is_base_color(tests[t][0])
             self.assertEqual(result, tests[t][1], f"color: {tests[t][0]}, expected: {tests[t][1]}")
 
     def test_get_color_dominance_indices(self):
         tests = [
             [(1,2,3), (2,1,0)],
             [(3,2,1), (0,1,2)],
-            [(3,1,2), (0,2,1)]
+            [(3,1,2), (0,2,1)],
+            [(1,1,1), (0,1,2)],
+            [(1,3,1), (1,0,2)]
         ]
+        # instantiate RGB class
+        color = rgb.RGB((1,0,0))
         for t in range(len(tests)):
-            result = colorchanger.get_color_dominance_indices(tests[t][0])
+            result = color.get_color_dominance_indices(tests[t][0])
             self.assertEqual(result, tests[t][1], f"color: {tests[t][0]}, expected: {tests[t][1]}")
-
-    def test_get_color_dominance_indices_with_matching_values(self):
-        raise NotImplementedError
 
     # def test_split(self):
     #     s = 'hello world'
