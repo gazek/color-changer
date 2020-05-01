@@ -116,6 +116,8 @@ class RGB():
         Returns:
         bool
         """
+        if not self._is_color_valid(color):
+            return False
         has_a_min = color[0] == self._MIN or color[1] == self._MIN or color[2] == self._MIN
         has_a_max = color[0] == self._MAX or color[1] == self._MAX or color[2] == self._MAX
         if has_a_min and has_a_max:
@@ -123,6 +125,66 @@ class RGB():
             return True
         # not a base color
         return False
+
+    def _get_color_white_level(self, color):
+        """Returns a value between 0 - 1 indicating the amount of white in a color
+
+        Positional Arguments:
+        color -- an RBG tuple of ints in any order
+
+        Returns:
+        int
+        """
+        d0, _, d2 = self._get_color_dominance_indices(color)
+        if color[d0] == 0:
+            return 0
+        return color[d2]/color[d0]
+
+    def _get_color_brightness(self, color):
+        """Returns a value between 0 - 1 indicating the brightness of a color
+
+        Positional Arguments:
+        color -- an RBG tuple of ints in any order
+
+        Returns:
+        int
+        """
+        d0, _, _ = self._get_color_dominance_indices(color)
+        return color[d0]/self._MAX
+
+    def _get_white_level_modifier(self, base_color, white_level):
+        """Calculates the component changes needed to apply the white level to the base color
+        """
+        # make sure base_color is valid
+        if not self._is_base_color(base_color):
+            raise ValueError(f"Invalid base color: {base_color}")
+        # make sure white level is valid
+        if white_level < 0:
+            white_level = 0
+        elif white_level > 1:
+            white_level = 1
+        # general case
+        result = [0] * 3
+        for d in self._get_color_dominance_indices(base_color)[1:]:
+            result[d] = (self._MAX - base_color[d]) * white_level
+        return tuple(result)
+
+    def _get_brightness_modifier(self, base_color, brightness, white_level_modifier):
+        """Calculates the component changes needed to apply the brightness to the base color
+        """
+        # add in the white level component modifiers
+        color = tuple(map(lambda c, m: c + m, base_color, white_level_modifier))
+        # make sure base_color is valid
+        if not self._is_base_color(color):
+            raise ValueError(f"Invalid base color or white level modifier: {base_color}, {white_level_modifier}")
+        # full brightness
+        if brightness >= 1:
+            return (self._MIN, self._MIN, self._MIN)
+        # general case
+        result = [0] * 3
+        for d in self._get_color_dominance_indices(color):
+            result[d] = (brightness - 1) * color[d]
+        return tuple(result)
 
     # @property
     # def x(self):
@@ -137,32 +199,6 @@ class RGB():
 
 
 # TODO: turn these into class methods
-
-
-
-
-def _get_color_white_level(color):
-    """Returns a value between 0 - 1 indicating the amount of white in a color
-
-    Positional Arguments:
-    color -- an RBG tuple of ints in any order
-
-    Returns:
-    int
-    """
-    raise NotImplementedError
-
-def _get_color_brightness(color):
-    """Returns a value between 0 - 1 indicating the brightness of a color
-
-    Positional Arguments:
-    color -- an RBG tuple of ints in any order
-
-    Returns:
-    int
-    """
-    raise NotImplementedError
-
 def _modify_base_color_white_level_and_brightness(base_color, white_level, brightness):
     """
     """
