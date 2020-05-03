@@ -144,8 +144,8 @@ class TestRGB(unittest.TestCase):
 
     def test_get_brightness_modifier(self):
         tests = [
-            [(255, 0, 0), 1, (0, 0, 0), (0, 0, 0)],
-            [(255, 50, 0), 0, (0, 0, 0), (-255, -50, 0)]
+            [(255, 0, 0), 1, 0, (0, 0, 0)],
+            [(255, 50, 0), 0, 0, (-255, -50, 0)]
         ]
         # instantiate RGB class
         color = rgb.RGB((1,0,0))
@@ -153,12 +153,76 @@ class TestRGB(unittest.TestCase):
             result = color._get_brightness_modifier(tests[t][0], tests[t][1], tests[t][2])
             self.assertEqual(result, tests[t][3], f"color: {tests[t][0]}, brightness: {tests[t][1]}, white_level_modifier: {tests[t][2]} expected: {tests[t][3]}")
 
-    def test_get_brightness_modifier_color(self):
+    # def test_get_brightness_modifier_color(self):
+    #     # instantiate RGB class
+    #     color = rgb.RGB((1,0,0))
+    #     # should raise
+    #     with self.assertRaises(ValueError):
+    #         color._get_brightness_modifier((1,2,3), 1, (-5000, 6, 7))
+
+    def test_get_white_level_component(self):
+        tests = [
+            [(200, 157, 47), (0, 14, 47)]
+        ]
+
         # instantiate RGB class
         color = rgb.RGB((1,0,0))
-        # should raise
-        with self.assertRaises(ValueError):
-            color._get_brightness_modifier((1,2,3), 1, (-5000, 6, 7))
+        for t in range(len(tests)):
+            result = color._get_white_level_component(tests[t][0])
+            self.assertEqual(result, tests[t][1], f"color: {tests[t][0]}, white_level_component expected: {tests[t][1]} actual: {result}")
+
+    def test_get_brightness_component(self):
+        tests = [
+            [(200, 157, 47), (-55, -43, -13)],
+            [(255, 50, 25), (0, 0, 0)],
+            [(3, 1, 1), (-252, -84, -84)]
+        ]
+
+        # instantiate RGB class
+        color = rgb.RGB((1,0,0))
+        for t in range(len(tests)):
+            result = color._get_brightness_component(tests[t][0])
+            self.assertEqual(result, tests[t][1], f"color: {tests[t][0]}, brightness_component expected: {tests[t][1]} actual: {result}")
+
+    def test_get_base_color(self):
+        tests = [
+            [(255, 125, 75), (255, 70, 0)],
+            [(255, 50, 0), (255, 50, 0)]
+        ]
+
+        # instantiate RGB class
+        color = rgb.RGB((1,0,0))
+        for t in range(len(tests)):
+            result = color._get_base_color(tests[t][0])
+            self.assertEqual(result, tests[t][1], f"color: {tests[t][0]}, base expected: {tests[t][1]} actual: {result}")
+
+    def test_get_color(self):
+        tests = [
+            [(255, 75, 0), 0.5, 0.75, (127, 105, 95)]
+        ]
+        # do tests
+        # instantiate RGB class
+        color = rgb.RGB((1,0,0))
+        for t in range(len(tests)):
+            result = color._get_color(tests[t][0], tests[t][1], tests[t][2])
+            self.assertEqual(result, tests[t][3], f"color: {tests[t][0]}, base expected: {tests[t][3]} actual: {result}")
+
+    def test_cycle(self):
+        tests = [
+            (220, 134, 45),
+            (54, 0, 225),
+            (50, 40, 40),
+            (40, 40, 40)
+        ]
+        color = rgb.RGB((1,0,0))
+        for c in tests:
+            result = c
+            for _ in range(3):
+                white_level = color._get_color_white_level(result)
+                brightness = color._get_color_brightness(result)
+                base_color = color._get_base_color(result)
+                result = color._get_color(base_color, brightness, white_level)
+            self.assertEqual(result, c, f"color: {c}, expected: {c} actual: {result}")
 
 if __name__ == '__main__':
     unittest.main()
