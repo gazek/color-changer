@@ -153,12 +153,12 @@ class TestRGB(unittest.TestCase):
             result = color._get_brightness_modifier(tests[t][0], tests[t][1], tests[t][2])
             self.assertEqual(result, tests[t][3], f"color: {tests[t][0]}, brightness: {tests[t][1]}, white_level_modifier: {tests[t][2]} expected: {tests[t][3]}")
 
-    # def test_get_brightness_modifier_color(self):
-    #     # instantiate RGB class
-    #     color = rgb.RGB((1,0,0))
-    #     # should raise
-    #     with self.assertRaises(ValueError):
-    #         color._get_brightness_modifier((1,2,3), 1, (-5000, 6, 7))
+    def test_get_brightness_modifier_color(self):
+        # instantiate RGB class
+        color = rgb.RGB((1,0,0))
+        # should raise
+        with self.assertRaises(ValueError):
+            color._get_brightness_modifier((1,2,3), 1, (-5000, 6, 7))
 
     def test_get_white_level_component(self):
         tests = [
