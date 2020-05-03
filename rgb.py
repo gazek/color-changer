@@ -223,13 +223,13 @@ class RGB():
     def _get_brightness_modifier(self, base_color, brightness, white_level):
         """Calculates the component changes needed to apply the brightness to the base color
         """
+        # make sure base_color is valid
+        if not self._is_base_color(base_color):
+            raise ValueError(f"Invalid base color: {base_color}")
         # get the white level modifier
         white_level_modifier = self._get_white_level_modifier(base_color, white_level)
         # add in the white level component modifiers
         color = tuple(map(lambda c, m: c + m, base_color, white_level_modifier))
-        # make sure base_color is valid
-        # if not self._is_base_color(color):
-        #     raise ValueError(f"Invalid base color or white level modifier: {base_color}, {white_level_modifier}")
         # full brightness
         if brightness >= 1:
             return (self._MIN, self._MIN, self._MIN)
