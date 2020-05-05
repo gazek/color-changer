@@ -1,36 +1,104 @@
 from collections import defaultdict
 from math import ceil
 
-class RGB():
-    # max RGB component value
-    _MAX = 255
-    # min RGB component value
-    _MIN = 0
-    # white base color cuz I like purple
-    _WHITE_BASE = (_MAX, 0, _MAX)
+# TODO:
+# ~~~~~~ 1. create a new __init__ that takes no arguments and only sets _MIN, _MAX and _WHITE_BASE
+# ~~~~~~ 2. Create setters for color, base_color, brightness and white_level that will recalculate the other when one is set
+# ~~~~~~ 3. Create getters for color and base_color that respect order
+# ~~~~~~ 4. Create getters for brightness and white_level
+# ~~~~~~ 5. create a getter and setter for order
+# 6. refactor tests to reflect the above changes
 
-    def __init__(self, color=None, order=(0,1,2)):
+class RGB():
+    def __init__(self, order=(0,1,2)):
         # max RGB component value
         self._MAX = 255
         # min RGB component value
         self._MIN = 0
+        # white base color cuz I like purple
+        self._WHITE_BASE = (self._MAX, 0, self._MAX)
+        # store the order
+        self._order = order
+        # set color to white base default
+        self._color_setter(self._WHITE_BASE)
+        # set default brightness
+        self._brightness = 1
+        # set default white level
+        self._white_level = 0
+
+    @property
+    def color(self):
+        return tuple(map(lambda i: self._color[i], self._order))
+
+    @color.setter
+    def color(self, value):
+        self._color_setter(value)
+
+    @property
+    def base_color(self):
+        return tuple(map(lambda i: self._base_color[i], self._order))
+
+    @base_color.setter
+    def base_color(self, value):
+        self._base_color_setter(value)
+
+    @property
+    def brightness(self):
+        return self._brightness
+
+    @brightness.setter
+    def brightness(self, value):
+        self._brightness_setter(value)
+
+    @property
+    def white_level(self):
+        return self._white_level
+
+    @white_level.setter
+    def white_level(self, value):
+        self._white_level_setter(value)
+
+    @property
+    def order(self):
+        return self._order
+
+    @order.setter
+    def order(self, value):
+        self._order = value
+
+    def _color_setter(self, color):
         # make sure the color is valid
         if not self._is_color_valid(color):
             raise ValueError(f'invalid RGB color provided: {color}')
-        # make sure the order is valid
-        if not self._is_order_valid(order):
-            raise ValueError(f'invalid RGB order provided: {order}')
         # store the color
         self._color = color
-        self._order = order
-
         # determine brightness
         self._brightness = self._get_color_brightness(self._color)
         # determine white level
         self._white_level = self._get_color_white_level(self._color)
-
-        # color_b1 = self._get_brightness_modifier()
         # determine base color
+        self._base_color = self._get_base_color(color)
+
+    def _base_color_setter(self, base_color):
+        # make sure the base_color is valid
+        if not self._is_base_color(base_color):
+            raise ValueError(f'invalid RGB base color provided: {base_color}')
+        # store the base color
+        self._base_color = base_color
+        # determine color
+        self._color = self._get_color(self._base_color, self._brightness, self._white_level)
+
+    def _brightness_setter(self, brightness):
+        # store the brightness value
+        self._brightness = brightness
+        # determine color
+        self._color = self._get_color(self._base_color, self._brightness, self._white_level)
+
+    def _white_level_setter(self, white_level):
+        # store the white_level value
+        self._white_level = white_level
+        # determine color
+        self._color = self._get_color(self._base_color, self._brightness, self._white_level)
 
     def _is_color_valid(self, color):
         """Verifies the a tuple is a valid RGB color
@@ -246,21 +314,3 @@ class RGB():
         brightness_modifier = self._get_brightness_modifier(base_color, brightness, white_level)
         # modify base color
         return tuple(map(lambda x, y, z: x+y+z, base_color, white_level_modifier, brightness_modifier))
-
-    # @property
-    # def x(self):
-    #     """I'm the 'x' property."""
-    #     print("getter of x called")
-    #     return self._x
-
-    # @x.setter
-    # def x(self, value):
-    #     print("setter of x called")
-    #     self._x = value
-
-
-# TODO: turn these into class methods
-def _apply_white_level_and_brightness_to_base_color(base_color, white_level, brightness):
-    """
-    """
-    raise NotImplementedError
