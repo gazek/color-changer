@@ -249,5 +249,11 @@ class TestRGB(unittest.TestCase):
         with self.assertRaises(ValueError):
             color.base_color = ()
 
+    def test_dominance_getter(self):
+        # instantiate RGB class
+        color = rgb.RGB()
+        color.color = (2,1,3)
+        self.assertEqual(color.dominance, (2,0,1))
+
 if __name__ == '__main__':
     unittest.main()

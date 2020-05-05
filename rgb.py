@@ -58,6 +58,10 @@ class RGB():
     def order(self, value):
         self._order = value
 
+    @property
+    def dominance(self):
+        return self._get_color_dominance_indices(self.color)
+
     def _color_setter(self, color):
         # make sure the color is valid
         if not self._is_color_valid(color):
