@@ -1,14 +1,6 @@
 from collections import defaultdict
 from math import ceil
 
-# TODO:
-# ~~~~~~ 1. create a new __init__ that takes no arguments and only sets _MIN, _MAX and _WHITE_BASE
-# ~~~~~~ 2. Create setters for color, base_color, brightness and white_level that will recalculate the other when one is set
-# ~~~~~~ 3. Create getters for color and base_color that respect order
-# ~~~~~~ 4. Create getters for brightness and white_level
-# ~~~~~~ 5. create a getter and setter for order
-# 6. refactor tests to reflect the above changes
-
 class RGB():
     def __init__(self, order=(0,1,2)):
         # max RGB component value
