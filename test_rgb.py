@@ -6,7 +6,7 @@ class TestRGB(unittest.TestCase):
         # instantiate RGB class
         color = rgb.RGB()
         # verify color
-        self.assertEqual(color._color, color._WHITE_BASE)
+        self.assertEqual(color._color, rgb.WHITE_BASE)
         # verify order
         self.assertEqual(color._order, (0,1,2))
 

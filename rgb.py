@@ -1,18 +1,19 @@
 from collections import defaultdict
 from math import ceil
 
+# max RGB component value
+MAX = 255
+# min RGB component value
+MIN = 0
+# white base color cuz I like purple
+WHITE_BASE = (MAX, MIN, MAX)
+
 class RGB():
     def __init__(self, order=(0,1,2)):
-        # max RGB component value
-        self._MAX = 255
-        # min RGB component value
-        self._MIN = 0
-        # white base color cuz I like purple
-        self._WHITE_BASE = (self._MAX, 0, self._MAX)
         # store the order
         self._order = order
         # set color to white base default
-        self._color_setter(self._WHITE_BASE)
+        self._color_setter(WHITE_BASE)
         # set default brightness
         self._brightness = 1
         # set default white level
@@ -112,7 +113,7 @@ class RGB():
             return False
         # verify that component colors are between _MIN and _MAX
         for c in color:
-            if c < self._MIN or c > self._MAX:
+            if c < MIN or c > MAX:
                 return False
         return True
 
@@ -178,7 +179,7 @@ class RGB():
             return color
         # is it true white or true black
         if self._is_white(color):
-            return self._WHITE_BASE
+            return WHITE_BASE
 
         # find base color
         base = tuple(map(lambda x, y: x-y, color, self._get_white_level_component(color)))
@@ -205,8 +206,8 @@ class RGB():
         if not self._is_color_valid(color):
             return False
         # general logic
-        has_a_min = color[0] == self._MIN or color[1] == self._MIN or color[2] == self._MIN
-        has_a_max = color[0] == self._MAX or color[1] == self._MAX or color[2] == self._MAX
+        has_a_min = color[0] == MIN or color[1] == MIN or color[2] == MIN
+        has_a_max = color[0] == MAX or color[1] == MAX or color[2] == MAX
         if has_a_min and has_a_max:
             # is a base color
             return True
@@ -237,7 +238,7 @@ class RGB():
         int
         """
         d0, _, _ = self._get_color_dominance_indices(color)
-        return color[d0]/self._MAX
+        return color[d0]/MAX
 
     def _get_white_level_component(self, color):
         """Calculates an RGB tuple that represents the white components of the color.
@@ -296,7 +297,7 @@ class RGB():
         color = tuple(map(lambda c, m: c + m, base_color, white_level_modifier))
         # full brightness
         if brightness >= 1:
-            return (self._MIN, self._MIN, self._MIN)
+            return (MIN, MIN, MIN)
         # general case
         result = [0] * 3
         for d in self._get_color_dominance_indices(color):
