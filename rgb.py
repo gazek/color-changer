@@ -8,7 +8,7 @@ MIN = 0
 # white base color cuz I like purple
 WHITE_BASE = (MAX, MIN, MAX)
 
-class RGB():
+class RGB:
     def __init__(self, order=(0,1,2)):
         # store the order
         self._order = order
