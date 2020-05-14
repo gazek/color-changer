@@ -44,7 +44,7 @@ class Transition:
         # get the period LCM
         period_lcm = self.get_period_lcm()
         # get the array of step numbers for the window
-        window_steps = map(lambda w: (step_num + w) % period_lcm, range(len(self.window)))
+        window_steps = list(map(lambda w: (step_num + w) % period_lcm, range(self.window)))
         # get the window colors
         window_colors = self._get_color_transition_color_window(window_steps)
         # get the brightness function values over the window
@@ -69,7 +69,7 @@ class Transition:
                 # find the right side (upper) boundry of the current color function
                 right_boundry = period_list[b]
                 # check if the requested step is within the boundary of the current function
-                if window_steps[s] < right_boundry:
+                if window_steps[s] < right_boundry or b == len(period_list)-1:
                     # set the direction base on the direction of the 0th function
                     if s == 0:
                         direction = self.color_funcs[0].direction

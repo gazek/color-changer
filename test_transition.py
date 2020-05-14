@@ -129,7 +129,8 @@ class TestTransition(unittest.TestCase):
         attributes = ['color1', 'color2', 'range', 'period', 'func', 'direction', 'trans_type', 'use_window']
         tests = [
             # [[[color1, color2, range, period, func, direction, trans_type, use_window]], step_number, window_size, result]
-            [[[(255,0,0), (0,255,0), (0,10), 10, lambda x: 1 if x < 8 else 0, 1, 'base', True]], 1, 10, [(255,0,0),(255,0,0),(255,0,0),(255,0,0),(255,0,0),(255,0,0),(255,0,0),(255,0,0),(255,0,0),(255,0,0),(255,0,0)]]
+            [[[(255,0,0), (0,255,0), (0,10), 10, lambda x: 1 if x < 8 else 0, 1, 'base', True]], 1, 10, [(255,0,0),(255,0,0),(255,0,0),(0,255,0),(0,255,0),(0,255,0),(0,255,0),(0,255,0),(0,255,0),(0,255,0)]],
+            [[[(255,0,0), (0,255,0), (0,10), 10, lambda x: 1 if x < 8 else 0, -1, 'base', True]], 1, 10, [(0,255,0),(0,255,0),(0,255,0),(0,255,0),(0,255,0),(0,255,0),(0,255,0),(255,0,0),(255,0,0),(255,0,0)]]
         ]
         # step across the tests
         for test in tests:
@@ -150,7 +151,38 @@ class TestTransition(unittest.TestCase):
                 t.color_funcs.append(cf)
             # get the window steps
             window_steps = list(map(lambda x: x + test[1], range(test[2])))
-            t._get_color_transition_color_window(window_steps)
+            # get the color window
+            cw = t._get_color_transition_color_window(window_steps)
+            result = list(map(lambda x: x.color, cw))
+            # assert
+            self.assertEqual(result, test[3])
+
+    def test_get_transition_color_window(self):
+        attributes = ['color1', 'color2', 'range', 'period', 'func', 'direction', 'trans_type', 'use_window']
+        tests = [
+            # [[[color1, color2, range, period, func, direction, trans_type, use_window]], step_number, window_size, result]
+            [[[(255,0,0), (0,255,0), (0,10), 10, lambda x: 1 if x < 8 else 0, 1, 'base', True]], 1, 10, [(255,0,0),(255,0,0),(255,0,0),(0,255,0),(0,255,0),(0,255,0),(0,255,0),(0,255,0),(0,255,0),(0,255,0)]],
+            [[[(255,0,0), (0,255,0), (0,10), 10, lambda x: 1 if x < 8 else 0, -1, 'base', True]], 1, 10, [(0,255,0),(0,255,0),(0,255,0),(0,255,0),(0,255,0),(0,255,0),(0,255,0),(255,0,0),(255,0,0),(255,0,0)]]
+        ]
+        # step across the tests
+        for test in tests:
+            # instantiate the Transition class
+            t = trans.Transition()
+            # step across the color functions
+            for f in test[0]:
+                cf = colorfunc.ColorFunc()
+                # set color1
+                cf.color1 = rgb.RGB()
+                cf.color1.color = f[0]
+                # set color2
+                cf.color2 = rgb.RGB()
+                cf.color2.color = f[1]
+                # set the remaining attributes
+                for a in range(2,len(attributes)):
+                    setattr(cf, attributes[a], f[a])
+                t.color_funcs.append(cf)
+            # get the color window
+            t.get_transition_window(test[1])
 
 
 if __name__ == '__main__':
