@@ -47,11 +47,14 @@ class Transition:
         window_steps = map(lambda w: (step_num + w) % period_lcm, range(len(self.window)))
         # get the window colors
         window_colors = self._get_color_transition_color_window(window_steps)
-        # get the brightness values
+        # get the brightness function values over the window
 
-        # get the white level values
-        
-        # apply white level and brightness to color
+        # get the white level function values over the window
+
+        # apply the white level and brightness values to the color window
+
+        # return the final color window
+        return window_colors
 
     def _get_color_transition_color_window(self, window_steps):
         # get the boundry of each functions period
