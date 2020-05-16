@@ -69,7 +69,7 @@ class Transition:
                 # find the right side (upper) boundry of the current color function
                 right_boundry = period_list[b]
                 # check if the requested step is within the boundary of the current function
-                if window_steps[s] < right_boundry or b == len(period_list)-1:
+                if window_steps[s] < right_boundry:
                     # set the direction base on the direction of the 0th function
                     if s == 0:
                         direction = self.color_funcs[0].direction
@@ -100,6 +100,8 @@ class Transition:
                         w = s
                     # put the color in the right place in the window
                     window[w] = color
+                    # break since we 
+                    break
         # return the window colors
         return window
 
